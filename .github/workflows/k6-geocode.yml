@@ -33,21 +33,16 @@ jobs:
         run: npm run build
 
       - name: Mask API key
-        uses: actions/github-script@v7
         env:
           GOOGLE_GEOCODE_API_KEY: ${{ inputs.google_api_key }}
-        with:
-          script: |
-            core.setSecret(process.env.GOOGLE_GEOCODE_API_KEY)
+        run: echo "::add-mask::$GOOGLE_GEOCODE_API_KEY"
 
       - name: Setup k6
         uses: grafana/setup-k6-action@v1
 
       - name: Run k6 test
-        uses: grafana/run-k6-action@v1
         env:
           GOOGLE_GEOCODE_API_KEY: ${{ inputs.google_api_key }}
           CITY: ${{ inputs.city }}
-        with:
-          path: ./dist/sdet_geocode_api_test.js
+        run: k6 run ./dist/sdet_geocode_api_test.js
 
