@@ -1,0 +1,16 @@
+{
+  "name": "automatiq-sdet-exercise",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SDET exercise: k6 API test in TypeScript",
+  "scripts": {
+    "build": "esbuild tests/sdet_geocode_api_test.ts --bundle --format=esm --platform=neutral --target=es2017 --external:k6 --external:k6/* --outfile=dist/sdet_geocode_api_test.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "k6": "npm run build && k6 run dist/sdet_geocode_api_test.js"
+  },
+  "devDependencies": {
+    "@types/k6": "^1.5.0",
+    "esbuild": "^0.27.3",
+    "typescript": "^5.9.3"
+  }
+}

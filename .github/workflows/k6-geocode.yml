@@ -1,0 +1,53 @@
+name: Run k6 geocode test
+
+on:
+  workflow_dispatch:
+    inputs:
+      city:
+        description: City to geocode (example: Los Angeles)
+        required: true
+        default: Los Angeles
+        type: string
+      google_api_key:
+        description: Google Geocoding API key
+        required: true
+        type: string
+
+jobs:
+  k6:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build k6 script
+        run: npm run build
+
+      - name: Mask API key
+        uses: actions/github-script@v7
+        env:
+          GOOGLE_GEOCODE_API_KEY: ${{ inputs.google_api_key }}
+        with:
+          script: |
+            core.setSecret(process.env.GOOGLE_GEOCODE_API_KEY)
+
+      - name: Setup k6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Run k6 test
+        uses: grafana/run-k6-action@v1
+        env:
+          GOOGLE_GEOCODE_API_KEY: ${{ inputs.google_api_key }}
+          CITY: ${{ inputs.city }}
+        with:
+          path: ./dist/sdet_geocode_api_test.js
+
