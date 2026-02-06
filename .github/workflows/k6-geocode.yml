@@ -1,15 +1,15 @@
 name: Run k6 geocode test
 
-on:
+"on":
   workflow_dispatch:
     inputs:
       city:
-        description: City to geocode (example: Los Angeles)
+        description: "City to geocode (example: Los Angeles)"
         required: true
-        default: Los Angeles
+        default: "Los Angeles"
         type: string
       google_api_key:
-        description: Google Geocoding API key
+        description: "Google Geocoding API key"
         required: true
         type: string
 
